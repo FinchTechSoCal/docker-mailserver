@@ -1,0 +1,2 @@
+# docker-mailserver
+mailserver docker
