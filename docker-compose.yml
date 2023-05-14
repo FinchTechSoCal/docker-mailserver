@@ -2,7 +2,7 @@
 version: "2.1"
 services:
   mailserver:
-    image: docker.io/mailserver/docker-mailserver:latest
+    image: ghcr.io/docker-mailserver/docker-mailserver
     container_name: mailserver
     # Provide the FQDN of your mail server here (Your DNS MX record should point to this value)
     hostname: finchtech.com
