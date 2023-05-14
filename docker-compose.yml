@@ -1,0 +1,43 @@
+---
+version: "2.1"
+services:
+  mailserver:
+    image: docker.io/mailserver/docker-mailserver:latest
+    container_name: mailserver
+    # Provide the FQDN of your mail server here (Your DNS MX record should point to this value)
+    hostname: finchtech.com
+    ports:
+      - "25:25"    # SMTP  (explicit TLS => STARTTLS)
+      - "465:465"  # ESMTP (implicit TLS)
+      - "587:587"  # ESMTP (explicit TLS => STARTTLS)
+    volumes:
+      - ${LOCVOL1}mailserver/mail-data/:/var/mail/
+      - ${LOCVOL1}mailserver/mail-state/:/var/mail-state/
+      - ${LOCVOL1}mailserver/mail-logs/:/var/log/mail/
+      - ${LOCVOL1}mailserver/config/:/tmp/docker-mailserver/
+      #- /etc/localtime:/etc/localtime:ro
+      #- ${LOCVOL1}mailserver:/data
+    environment:
+      - ENABLE_SPAMASSASSIN=0
+      - SPAMASSASSIN_SPAM_TO_INBOX=0
+      - ENABLE_CLAMAV=0
+      - ENABLE_FAIL2BAN=0
+      - ENABLE_POSTGREY=0
+      - TZ=${TZ}
+      - PERMIT_DOCKER=connected-networks
+    #cap_add:
+      #- NET_ADMIN # For Fail2Ban to work
+    restart: unless-stopped
+    stop_grace_period: 1m
+    #healthcheck:
+    #  test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
+    #  timeout: 3s
+    #  retries: 0
+#
+#
+#
+#
+networks:
+  default:
+    external: true
+    name: ${CONNET}
